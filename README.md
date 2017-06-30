@@ -6,7 +6,7 @@ Simple Vue.js directive wrapper for shave.js
 Install from NPM
 
 ```
-npm install vue-shave
+npm install vue-shave shave
 ```
 
 Add to Vue with optional throttle setting
