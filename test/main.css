@@ -1,0 +1,37 @@
+/**
+ * index.scss
+ * - Add any styles you want here!
+ */
+
+* {
+  box-sizing: border-box;
+}
+
+#demo {
+  max-width: 600px;
+  margin: 0 auto;
+  font-size: 19px;
+}
+
+body {
+  font-family: 'Montserrat', sans-serif;
+  background: #fff;
+}
+
+header {
+  text-transform: uppercase;
+  letter-spacing: 2px;
+  font-weight: normal;
+  text-align: center;
+  margin-top: 50px;
+  margin-bottom: 50px;
+}
+
+h1 {
+  letter-spacing: 2px;
+  text-transform: uppercase;
+}
+
+div {
+    margin-top: 20px;
+}

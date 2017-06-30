@@ -1,4 +1,4 @@
-import shave from 'shave';
+import 'shave';
 
 export const VueShave = {
 
@@ -16,7 +16,6 @@ export const VueShave = {
 	settings: {},
 
 	install( Vue, options ) {
-
 		// Merge settings with defaults
 		this.settings.height = typeof options.height === 'undefined' ? this.defaults.height : options.height;
 		this.settings.throttle = typeof options.throttle === 'undefined' ? this.defaults.throttle : options.throttle;
@@ -26,13 +25,15 @@ export const VueShave = {
 		// Our throttled run function
 		const runShaversThrottled = this.throttle( this.runShavers, this.defaults.throttle, this );
 
+		const that = this;
+
 		// Add the shave directive
 		Vue.directive( 'shave', {
 
 			bind( el, binding ) {
-				const height = ( 'value' in binding && 'height' in binding.value ) ? binding.value.height : VueShave.settings.height;
-				const character = ( 'value' in binding && 'character' in binding.value ) ? binding.value.character : VueShave.settings.character;
-				const spaces = ( 'value' in binding && 'spaces' in binding.value ) ? binding.value.spaces : VueShave.settings.spaces;
+				const height = ( 'value' in binding && 'height' in binding.value ) ? binding.value.height : that.settings.height;
+				const character = ( 'value' in binding && 'character' in binding.value ) ? binding.value.character : that.settings.character;
+				const spaces = ( 'value' in binding && 'spaces' in binding.value ) ? binding.value.spaces : that.settings.spaces;
 
 				// Create the function to run on window resize
 				const shaveFn = () => {
@@ -44,35 +45,31 @@ export const VueShave = {
 				};
 
 				// Add the shaver to the list
-				VueShave.shavers.push({
+				that.shavers.push({
 					el,
 					shaveFn,
 				});
 
 				// If this is the first shaver, add the resize event listener
-				if ( VueShave.shavers.length === 1 ) {
+				if ( that.shavers.length === 1 ) {
 					window.addEventListener( 'resize', runShaversThrottled );
 				}
-
 			},
 			unbind( el ) {
 
 				// Remove the shaver from the list
-				VueShave.removeShaver( el );
+				that.removeShaver( el );
 
 				// If there are no shavers, remove the resize listener    
-				if ( VueShave.shavers.length === 0 ) {
+				if ( that.shavers.length === 0 ) {
 					window.removeEventListener( 'resize', runShaversThrottled );
 				}
 			},
+			inserted( el ) {
+				that.runShaver( el );
+			},
 			componentUpdated( el ) {
-				// Get the shaver for the current element
-				const shaver = VueShave.getShaver( el );
-
-				// Run the shaver function
-				if ( shaver && shaver.shaveFn ) {
-					shaver.shaveFn();
-				}
+				that.runShaver( el );
 			},
 		});
 
@@ -80,6 +77,16 @@ export const VueShave = {
 
 	runShavers() {
 		this.shavers.forEach( shaver => shaver.shaveFn() );
+	},
+
+	runShaver( el ) {
+		// Get the shaver for the current element
+		const shaver = this.getShaver( el );
+
+		// Run the shaver function
+		if ( shaver && shaver.shaveFn ) {
+			shaver.shaveFn();
+		}
 	},
 
 	getShaver( el ) {

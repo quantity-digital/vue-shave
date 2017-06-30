@@ -66,25 +66,42 @@ var VueShave =
 /************************************************************************/
 /******/ ([
 /* 0 */
-/***/ (function(module, __webpack_exports__, __webpack_require__) {
+/***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
-Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__vue_shave__ = __webpack_require__(1);
-/* harmony namespace reexport (by provided) */ __webpack_require__.d(__webpack_exports__, "VueShave", function() { return __WEBPACK_IMPORTED_MODULE_0__vue_shave__["a"]; });
 
 
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+
+var _vueShave = __webpack_require__(1);
+
+Object.keys(_vueShave).forEach(function (key) {
+  if (key === "default" || key === "__esModule") return;
+  Object.defineProperty(exports, key, {
+    enumerable: true,
+    get: function get() {
+      return _vueShave[key];
+    }
+  });
+});
 
 /***/ }),
 /* 1 */
-/***/ (function(module, __webpack_exports__, __webpack_require__) {
+/***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0_shave__ = __webpack_require__(2);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0_shave___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_0_shave__);
 
 
-const VueShave = {
+Object.defineProperty(exports, "__esModule", {
+	value: true
+});
+exports.VueShave = undefined;
+
+__webpack_require__(2);
+
+var VueShave = exports.VueShave = {
 
 	// Keep a tally of our shavers so we can remove event listeners later
 	shavers: [],
@@ -94,13 +111,12 @@ const VueShave = {
 		height: 100,
 		throttle: 300,
 		spaces: null,
-		character: null,
+		character: null
 	},
 
 	settings: {},
 
-	install( Vue, options ) {
-
+	install: function install(Vue, options) {
 		// Merge settings with defaults
 		this.settings.height = typeof options.height === 'undefined' ? this.defaults.height : options.height;
 		this.settings.throttle = typeof options.throttle === 'undefined' ? this.defaults.throttle : options.throttle;
@@ -108,82 +124,88 @@ const VueShave = {
 		this.settings.character = typeof options.character === 'undefined' ? this.defaults.character : options.character;
 
 		// Our throttled run function
-		const runShaversThrottled = this.throttle( this.runShavers, this.defaults.throttle, this );
+		var runShaversThrottled = this.throttle(this.runShavers, this.defaults.throttle, this);
+
+		var that = this;
 
 		// Add the shave directive
-		Vue.directive( 'shave', {
-
-			bind( el, binding ) {
-				const height = ( 'value' in binding && 'height' in binding.value ) ? binding.value.height : VueShave.settings.height;
-				const character = ( 'value' in binding && 'character' in binding.value ) ? binding.value.character : VueShave.settings.character;
-				const spaces = ( 'value' in binding && 'spaces' in binding.value ) ? binding.value.spaces : VueShave.settings.spaces;
+		Vue.directive('shave', {
+			bind: function bind(el, binding) {
+				var height = 'value' in binding && 'height' in binding.value ? binding.value.height : that.settings.height;
+				var character = 'value' in binding && 'character' in binding.value ? binding.value.character : that.settings.character;
+				var spaces = 'value' in binding && 'spaces' in binding.value ? binding.value.spaces : that.settings.spaces;
 
 				// Create the function to run on window resize
-				const shaveFn = () => {
-					console.log( 'shaving' );
-					__WEBPACK_IMPORTED_MODULE_0_shave___default.a( el, height, {
-						character,
-						spaces,
+				var shaveFn = function shaveFn() {
+					console.log('shaving');
+					shave(el, height, {
+						character: character,
+						spaces: spaces
 					});
 				};
 
 				// Add the shaver to the list
-				VueShave.shavers.push({
-					el,
-					shaveFn,
+				that.shavers.push({
+					el: el,
+					shaveFn: shaveFn
 				});
 
 				// If this is the first shaver, add the resize event listener
-				if ( VueShave.shavers.length === 1 ) {
-					window.addEventListener( 'resize', runShaversThrottled );
+				if (that.shavers.length === 1) {
+					window.addEventListener('resize', runShaversThrottled);
 				}
-
 			},
-			unbind( el ) {
+			unbind: function unbind(el) {
 
 				// Remove the shaver from the list
-				VueShave.removeShaver( el );
+				that.removeShaver(el);
 
 				// If there are no shavers, remove the resize listener    
-				if ( VueShave.shavers.length === 0 ) {
-					window.removeEventListener( 'resize', runShaversThrottled );
+				if (that.shavers.length === 0) {
+					window.removeEventListener('resize', runShaversThrottled);
 				}
 			},
-			componentUpdated( el ) {
-				// Get the shaver for the current element
-				const shaver = VueShave.getShaver( el );
-
-				// Run the shaver function
-				if ( shaver && shaver.shaveFn ) {
-					shaver.shaveFn();
-				}
+			inserted: function inserted(el) {
+				that.runShaver(el);
 			},
+			componentUpdated: function componentUpdated(el) {
+				that.runShaver(el);
+			}
 		});
-
 	},
-
-	runShavers() {
-		this.shavers.forEach( shaver => shaver.shaveFn() );
+	runShavers: function runShavers() {
+		this.shavers.forEach(function (shaver) {
+			return shaver.shaveFn();
+		});
 	},
+	runShaver: function runShaver(el) {
+		// Get the shaver for the current element
+		var shaver = this.getShaver(el);
 
-	getShaver( el ) {
-		const found = this.shavers.filter( shaver => shaver.el === el );
+		// Run the shaver function
+		if (shaver && shaver.shaveFn) {
+			shaver.shaveFn();
+		}
+	},
+	getShaver: function getShaver(el) {
+		var found = this.shavers.filter(function (shaver) {
+			return shaver.el === el;
+		});
 		return found.length ? found[0] : null;
 	},
-
-	removeShaver( el ) {
-		this.shavers = this.shavers.filter( shaver => shaver.el !== el );
+	removeShaver: function removeShaver(el) {
+		this.shavers = this.shavers.filter(function (shaver) {
+			return shaver.el !== el;
+		});
 	},
-
-	throttle( fn, threshhold, scope ) {
+	throttle: function throttle(fn, threshhold, scope) {
 		threshhold || (threshhold = 250);
-		var last,
-			deferTimer;
+		var last, deferTimer;
 		return function () {
 			var context = scope || this;
 
-			var now = +new Date,
-				args = arguments;
+			var now = +new Date(),
+			    args = arguments;
 			if (last && now < last + threshhold) {
 				// hold on to it
 				clearTimeout(deferTimer);
@@ -196,12 +218,8 @@ const VueShave = {
 				fn.apply(context, args);
 			}
 		};
-	},
-
+	}
 };
-/* harmony export (immutable) */ __webpack_exports__["a"] = VueShave;
-
-
 
 /***/ }),
 /* 2 */

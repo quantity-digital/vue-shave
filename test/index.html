@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+    <!-- Meta -->
+    <meta charset="UTF-8" />
+    <title>Shave + Vue.JS </title>
+
+    <!-- Styles -->
+    <link href="https://fonts.googleapis.com/css?family=Montserrat" rel="stylesheet"> 
+    <link href="/main.css" rel="stylesheet"> 
+
+    <!-- Scripts -->
+</head>
+
+<body>
+
+    <script type="text/x-template" id="page-head">
+        <header>
+            <h1>Shave testing</h1>
+        </header>
+    </script>
+
+    <script type="text/x-template" id="text">
+        <div>
+            <h1 v-shave="{ height: 110 }">{{ text }}</h1>
+            <div v-shave>{{ text }}</div>
+        </div>
+    </script>
+
+    <div id="demo">
+        <button @click="toggleComponents">Toggle components</button>
+        <div v-if="showComponents" v-shave="{ height: 50 }">Lorem ipsum dolor sit amet, consectetur adipisicing elit. Quaerat molestias, earum corrupti perferendis! Dolores veritatis quos totam blanditiis culpa? Aliquam reiciendis dignissimos, explicabo aut libero, est natus quae quaerat ab. Lorem ipsum dolor sit amet, consectetur adipisicing elit. Quaerat molestias, earum corrupti perferendis! Dolores veritatis quos totam blanditiis culpa? Aliquam reiciendis dignissimos, explicabo aut libero, est natus quae quaerat ab.</div>
+        <div v-if="showComponents" v-shave="{ height: 50 }">Lorem ipsum dolor sit amet, consectetur adipisicing elit. Dolor ad libero nostrum natus placeat molestiae, unde nemo, inventore id quae architecto totam quasi earum error nesciunt magnam perspiciatis voluptatem facilis. Lorem ipsum dolor sit amet, consectetur adipisicing elit. Quaerat molestias, earum corrupti perferendis! Dolores veritatis quos totam blanditiis culpa? Aliquam reiciendis dignissimos, explicabo aut libero, est natus quae quaerat ab.</div>
+        <h2 v-shave="{height: 80, character: '!!!'}" @click="addHodor" v-if="showComponents">{{ hodor }}!</h2>
+    </div>
+
+    <!-- Scripts -->
+    <script src="https://unpkg.com/vue@2.3.4"></script>
+    <script src="https://rawgit.com/dollarshaveclub/shave/master/dist/shave.js"></script>
+    <script src="/vue-shave.js"></script>
+    <script src="/main.js"></script>
+</body>
+
+</html>
