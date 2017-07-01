@@ -1,6 +1,6 @@
-import 'shave';
+import shave from 'shave/dist/shave';
 
-export const VueShave = {
+const VueShave = {
 
 	// Keep a tally of our shavers so we can remove event listeners later
 	shavers: [],
@@ -17,15 +17,16 @@ export const VueShave = {
 
 	install( Vue, options ) {
 		// Merge settings with defaults
-		this.settings.height = typeof options.height === 'undefined' ? this.defaults.height : options.height;
-		this.settings.throttle = typeof options.throttle === 'undefined' ? this.defaults.throttle : options.throttle;
-		this.settings.spaces = typeof options.spaces === 'undefined' ? this.defaults.spaces : options.spaces;
-		this.settings.character = typeof options.character === 'undefined' ? this.defaults.character : options.character;
+		this.settings = { ...this.defaults, ...options };
 
 		// Our throttled run function
-		const runShaversThrottled = this.throttle( this.runShavers, this.defaults.throttle, this );
+		const runShaversThrottled = throttle( this.settings.throttle, false, this.runShavers );
 
 		const that = this;
+
+		if ( window ) {
+			window.addEventListener( 'load', () => this.runShavers() );
+		}
 
 		// Add the shave directive
 		Vue.directive( 'shave', {
@@ -98,27 +99,29 @@ export const VueShave = {
 		this.shavers = this.shavers.filter( shaver => shaver.el !== el );
 	},
 
-	throttle( fn, threshhold, scope ) {
-		threshhold || (threshhold = 250);
-		var last,
-			deferTimer;
-		return function () {
-			var context = scope || this;
+};
 
-			var now = +new Date,
-				args = arguments;
-			if (last && now < last + threshhold) {
-				// hold on to it
-				clearTimeout(deferTimer);
-				deferTimer = setTimeout(function () {
-					last = now;
-					fn.apply(context, args);
-				}, threshhold);
-			} else {
+function throttle( fn, threshhold, scope ) {
+	threshhold || (threshhold = 250);
+	var last,
+		deferTimer;
+	return function () {
+		var context = scope || this;
+
+		var now = +new Date,
+			args = arguments;
+		if (last && now < last + threshhold) {
+			// hold on to it
+			clearTimeout(deferTimer);
+			deferTimer = setTimeout(function () {
 				last = now;
 				fn.apply(context, args);
-			}
-		};
-	},
+			}, threshhold);
+		} else {
+			last = now;
+			fn.apply(context, args);
+		}
+	};
+}
 
-};
+export default VueShave;
