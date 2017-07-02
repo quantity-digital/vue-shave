@@ -1,1 +1,2 @@
-export * from './vue-shave';
+import VueShave from './vue-shave';
+export default VueShave;

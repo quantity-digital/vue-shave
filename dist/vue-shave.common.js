@@ -4,13 +4,11 @@
  * Released under the MIT License.
  */
 
-(function (global, factory) {
-	typeof exports === 'object' && typeof module !== 'undefined' ? module.exports = factory(require('shave/dist/shave')) :
-	typeof define === 'function' && define.amd ? define(['shave/dist/shave'], factory) :
-	(global.VueResource = factory(global.shave));
-}(this, (function (shave) { 'use strict';
+'use strict';
 
-shave = shave && 'default' in shave ? shave['default'] : shave;
+function _interopDefault (ex) { return (ex && (typeof ex === 'object') && 'default' in ex) ? ex['default'] : ex; }
+
+var shave = _interopDefault(require('shave/dist/shave'));
 
 var _extends = Object.assign || function (target) {
   for (var i = 1; i < arguments.length; i++) {
@@ -152,6 +150,4 @@ function throttle(fn, threshhold, scope) {
 	};
 }
 
-return VueShave$1;
-
-})));
+module.exports = VueShave$1;
