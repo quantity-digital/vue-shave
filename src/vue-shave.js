@@ -1,105 +1,85 @@
 import shave from 'shave/dist/shave';
 import throttle from 'just-throttle';
 
-const VueShave = {
+// Where we keep our shaver functions
+let shavers = [];
 
-	// Keep a tally of our shavers so we can remove event listeners later
-	shavers: [],
+// Global defaults
+const defaults = {
+	height: 100,
+	throttle: 300,
+	spaces: false,
+	character: '...',
+};
 
-	// Default settings
-	defaults: {
-		height: 100,
-		throttle: 300,
-		spaces: null,
-		character: null,
-	},
+// Vue plugin install function
+function install( Vue, options ) {
+	// Merge settings with defaults
+	const globalSettings = { ...defaults, ...options };
 
-	settings: {},
+	// Our throttled run function
+	const runShaversThrottled = throttle( runShavers, globalSettings.throttle );
 
-	install( Vue, options ) {
-		// Merge settings with defaults
-		this.settings = { ...this.defaults, ...options };
+	if ( window ) {
+		window.addEventListener( 'load', () => runShavers() );
+	}
 
-		// Our throttled run function
-		const runShaversThrottled = throttle( this.runShavers.bind( this ), this.settings.throttle );
+	// Add the shave directive
+	Vue.directive( 'shave', {
 
-		const that = this;
+		bind( el, binding ) {
+			// Setup settings
+			const directiveSettings = binding.value || {};
+			const settings = { ...globalSettings, ...directiveSettings };
 
-		if ( window ) {
-			window.addEventListener( 'load', () => this.runShavers() );
-		}
+			// Create the function to run on window resize
+			// Bound to the given shaver settings
+			const shaveFn = (( height, character, spaces ) => {
+				console.log( 'shaving' );
+				shave( el, height, { character, spaces });
+			}).bind( null, settings.height, settings.character, settings.spaces );
 
-		// Add the shave directive
-		Vue.directive( 'shave', {
+			// Add the shaver to the list
+			shavers.push({ el, shaveFn });
 
-			bind( el, binding ) {
-				const height = ( 'value' in binding && 'height' in binding.value ) ? binding.value.height : that.settings.height;
-				const character = ( 'value' in binding && 'character' in binding.value ) ? binding.value.character : that.settings.character;
-				const spaces = ( 'value' in binding && 'spaces' in binding.value ) ? binding.value.spaces : that.settings.spaces;
+			// If this is the first shaver, add the resize event listener
+			if ( shavers.length === 1 ) {
+				window.addEventListener( 'resize', runShaversThrottled );
+			}
+		},
 
-				// Create the function to run on window resize
-				const shaveFn = () => {
-					console.log( 'shaving' );
-					shave( el, height, {
-						character,
-						spaces,
-					});
-				};
+		unbind( el ) {
+			// Remove the shaver from the list
+			shavers = shavers.filter( shaver => shaver.el !== el );
 
-				// Add the shaver to the list
-				that.shavers.push({
-					el,
-					shaveFn,
-				});
+			// If there are no shavers, remove the resize listener    
+			if ( shavers.length === 0 ) {
+				window.removeEventListener( 'resize', runShaversThrottled );
+			}
+		},
 
-				// If this is the first shaver, add the resize event listener
-				if ( that.shavers.length === 1 ) {
-					window.addEventListener( 'resize', runShaversThrottled );
-				}
-			},
-			unbind( el ) {
+		// Run shaver on inserted
+		inserted: runShaver,
 
-				// Remove the shaver from the list
-				that.removeShaver( el );
-
-				// If there are no shavers, remove the resize listener    
-				if ( that.shavers.length === 0 ) {
-					window.removeEventListener( 'resize', runShaversThrottled );
-				}
-			},
-			inserted( el ) {
-				that.runShaver( el );
-			},
-			componentUpdated( el ) {
-				that.runShaver( el );
-			},
-		});
-
-	},
-
-	runShavers() {
-		this.shavers.forEach( shaver => shaver.shaveFn() );
-	},
-
-	runShaver( el ) {
-		// Get the shaver for the current element
-		const shaver = this.getShaver( el );
-
-		// Run the shaver function
-		if ( shaver && shaver.shaveFn ) {
-			shaver.shaveFn();
-		}
-	},
-
-	getShaver( el ) {
-		const found = this.shavers.filter( shaver => shaver.el === el );
-		return found.length ? found[0] : null;
-	},
-
-	removeShaver( el ) {
-		this.shavers = this.shavers.filter( shaver => shaver.el !== el );
-	},
+		// Run shaver on updated
+		componentUpdated: runShaver,
+	});
 
 };
 
-export default VueShave;
+function runShavers() {
+	shavers.forEach( shaver => shaver.shaveFn() );
+};
+
+function runShaver( el ) {
+	// Get the shaver for the current element
+	const found = shavers.filter( shaver => shaver.el === el );
+	const shaver = found.length ? found[ 0 ] : null;
+
+	// Run the shaver function
+	if ( shaver && shaver.shaveFn ) {
+		shaver.shaveFn();
+	}
+};
+
+export default { install };

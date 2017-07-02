@@ -1,7 +1,7 @@
 import Vue from 'vue/dist/vue.esm';
 import VueShave from '../dist/vue-shave.es2015';
 
-Vue.use( VueShave, { throttle: 400 });
+Vue.use( VueShave, { throttle: 400, character: '-' });
  
 // Init Vue!
 new Vue({

@@ -12,7 +12,7 @@ const moduleName = 'VueShave';
 const banner =
 `/*!
  * ${ pkg.name } v${ pkg.version }
- * ${ pkg.repository.url }
+ * ${ pkg.repository.url.replace( 'git+', '' ) }
  * Released under the MIT License.
  */
 `;
