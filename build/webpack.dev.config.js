@@ -2,6 +2,10 @@ const path = require( 'path' );
 
 const sharedConfig = {
 	entry: path.join( __dirname, '../example/main.js' ),
+	output: {
+		path: path.resolve( __dirname, '../example' ),		
+		filename: 'main.bundle.js',
+	},
 	module: {
 		rules: [{
 			test: /\.js$/,
@@ -12,11 +16,11 @@ const sharedConfig = {
 		}],
 	},
 	devServer: {
-		contentBase: path.join( __dirname, '../example/' ),
+		contentBase: [ 
+			path.join( __dirname, '../example/' ),
+			path.join( __dirname, '../dist/' ),
+		],
 	},
 };
 
-const esmConfig = Object.assign({}, sharedConfig, { output: { filename: 'main.esm.js' } });
-
-module.exports = [ esmConfig ];
-
+module.exports = [ sharedConfig ];

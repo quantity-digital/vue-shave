@@ -10,6 +10,28 @@ function _interopDefault (ex) { return (ex && (typeof ex === 'object') && 'defau
 
 var shave = _interopDefault(require('shave/dist/shave'));
 
+var index = throttle;
+
+function throttle (fn, interval, immediate) {
+  var wait = false;
+  var callNow = false;
+  return function () {
+    var callNow = immediate && !wait;
+    var context = this;
+    var args = arguments;
+    if (!wait) {
+      wait = true;
+      setTimeout(function () {
+        wait = false;
+        return fn.apply(context, args);
+      }, interval);
+    }
+    if (callNow) {
+      return fn.apply(this, arguments);
+    }
+  }
+}
+
 var _extends = Object.assign || function (target) {
   for (var i = 1; i < arguments.length; i++) {
     var source = arguments[i];
@@ -46,7 +68,7 @@ var VueShave$1 = {
 		this.settings = _extends({}, this.defaults, options);
 
 		// Our throttled run function
-		var runShaversThrottled = throttle(this.settings.throttle, false, this.runShavers);
+		var runShaversThrottled = index(this.runShavers.bind(this), this.settings.throttle);
 
 		var that = this;
 
@@ -127,27 +149,5 @@ var VueShave$1 = {
 		});
 	}
 };
-
-function throttle(fn, threshhold, scope) {
-	threshhold || (threshhold = 250);
-	var last, deferTimer;
-	return function () {
-		var context = scope || this;
-
-		var now = +new Date(),
-		    args = arguments;
-		if (last && now < last + threshhold) {
-			// hold on to it
-			clearTimeout(deferTimer);
-			deferTimer = setTimeout(function () {
-				last = now;
-				fn.apply(context, args);
-			}, threshhold);
-		} else {
-			last = now;
-			fn.apply(context, args);
-		}
-	};
-}
 
 module.exports = VueShave$1;

@@ -1,19 +1,26 @@
-const fs = require( 'fs' );
-const rollup = require( 'rollup' );
+const fs      = require( 'fs' );
+const rollup  = require( 'rollup' );
 const resolve = require( 'rollup-plugin-node-resolve' );
-const babel = require( 'rollup-plugin-babel' );
-const uglify = require( 'uglify-js' );
-const pkg = require( '../package.json' );
+const babel   = require( 'rollup-plugin-babel' );
+const commonjs   = require( 'rollup-plugin-commonjs' );
+const uglify  = require( 'uglify-js' );
+
+const pkg     = require( '../package.json' );
+
+const filename = 'vue-shave';
+const moduleName = 'VueShave';
 const banner =
-    '/*!\n' +
-    ' * vue-shave v' + pkg.version + '\n' +
-    ' * ' + pkg.repository.url + '\n' +
-    ' * Released under the MIT License.\n' +
-    ' */\n';
+`/*!
+ * ${ pkg.name } v${ pkg.version }
+ * ${ pkg.repository.url }
+ * Released under the MIT License.
+ */
+`;
 
 rollup.rollup({
 	entry: 'src/index.js',
 	plugins: [
+		commonjs(),
 		resolve(),
 		babel({
 			exclude: 'node_modules/**', // only transpile our source code
@@ -22,26 +29,26 @@ rollup.rollup({
 	external: [ 'shave/dist/shave' ],
 })
 .then( function( bundle ) {
-	return write( 'dist/vue-shave.js', bundle.generate({
+	return write( `dist/${ filename }.js`, bundle.generate({
 		format: 'umd',
 		banner: banner,
-		moduleName: 'VueResource',
+		moduleName: moduleName,
 	}).code, bundle );
 })
 .then( function( bundle ) {
-	const code = fs.readFileSync( 'dist/vue-shave.js', 'utf8' );
-	return write( 'dist/vue-shave.min.js',
+	const code = fs.readFileSync( `dist/${ filename }.js`, 'utf8' );
+	return write( `dist/${ filename }.min.js`,
 		banner + '\n' + uglify.minify( code ).code,
 		bundle );
 })
 .then( function( bundle ) {
-	return write( 'dist/vue-shave.es2015.js', bundle.generate({
+	return write( `dist/${ filename }.es2015.js`, bundle.generate({
 		format: 'es',
 		banner: banner,
 	}).code, bundle );
 })
 .then( function( bundle ) {
-	return write( 'dist/vue-shave.common.js', bundle.generate({
+	return write( `dist/${ filename }.common.js`, bundle.generate({
 		format: 'cjs',
 		banner: banner,
 	}).code, bundle );
@@ -52,6 +59,7 @@ function write( dest, code, bundle ) {
 	return new Promise( function( resolve, reject ) {
 		fs.writeFile( dest, code, function( err ) {
 			if ( err ) return reject( err );
+
 			console.log( blue( dest ) + ' ' + getSize( code ) );
 			resolve( bundle );
 		});

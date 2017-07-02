@@ -2,8 +2,10 @@
   "name": "vue-shave",
   "version": "1.0.0",
   "description": "A wrapper Vue Directive for shave.js",
-  "main": "dist/vue-shave.js",
-  "module": "src/index.js",
+  "main": "dist/vue-shave.common.js",
+  "module": "dist/vue-shave.es2015.js",
+  "unpkg": "dist/vue-shave.min.js",
+  "jsdelivr": "dist/vue-shave.min.js",
   "repository": {
     "type": "git",
     "url": "git+https://github.com/quantity-digital/vue-shave.git"
@@ -27,7 +29,7 @@
     "babel-plugin-transform-object-rest-spread": "^6.23.0",
     "babel-preset-env": "^1.5.2",
     "babel-preset-latest": "^6.24.1",
-    "lodash": "^4.17.4",
+    "just-throttle": "^1.0.2",
     "rollup": "^0.43.0",
     "rollup-plugin-babel": "^2.7.1",
     "rollup-plugin-commonjs": "^8.0.2",

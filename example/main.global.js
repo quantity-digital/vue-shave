@@ -1,6 +1,3 @@
-import Vue from 'vue/dist/vue.esm';
-import VueShave from '../dist/vue-shave.es2015';
-
 Vue.use( VueShave, { throttle: 400 });
  
 // Init Vue!
@@ -13,10 +10,10 @@ new Vue({
 		};
 	},
 	methods: {
-		addHodor() {
+		addHodor: function() {
 			this.hodor += ' hodor';
 		},
-		toggleComponents() {
+		toggleComponents: function() {
 			this.showComponents = !this.showComponents;
 		},
 	},

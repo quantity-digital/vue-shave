@@ -1,4 +1,5 @@
 import shave from 'shave/dist/shave';
+import throttle from 'just-throttle';
 
 const VueShave = {
 
@@ -20,7 +21,7 @@ const VueShave = {
 		this.settings = { ...this.defaults, ...options };
 
 		// Our throttled run function
-		const runShaversThrottled = throttle( this.settings.throttle, false, this.runShavers );
+		const runShaversThrottled = throttle( this.runShavers.bind( this ), this.settings.throttle );
 
 		const that = this;
 
@@ -100,28 +101,5 @@ const VueShave = {
 	},
 
 };
-
-function throttle( fn, threshhold, scope ) {
-	threshhold || (threshhold = 250);
-	var last,
-		deferTimer;
-	return function () {
-		var context = scope || this;
-
-		var now = +new Date,
-			args = arguments;
-		if (last && now < last + threshhold) {
-			// hold on to it
-			clearTimeout(deferTimer);
-			deferTimer = setTimeout(function () {
-				last = now;
-				fn.apply(context, args);
-			}, threshhold);
-		} else {
-			last = now;
-			fn.apply(context, args);
-		}
-	};
-}
 
 export default VueShave;
