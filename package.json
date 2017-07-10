@@ -1,6 +1,6 @@
 {
   "name": "vue-shave",
-  "version": "1.0.1",
+  "version": "1.0.2",
   "description": "A wrapper Vue Directive for shave.js",
   "main": "dist/vue-shave.common.js",
   "module": "dist/vue-shave.es2015.js",
