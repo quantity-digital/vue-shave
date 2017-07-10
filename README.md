@@ -11,9 +11,13 @@ Simple Vue.js directive wrapper for [shave](https://github.com/dollarshaveclub/s
 
 ### With a module bundler (webpack, rollup, etc.)
 
+Shave is installed as a dependency of vue-shave. 
+
 ```javascript
-npm install vue-shave https://github.com/dollarshaveclub/shave.git
+npm install vue-shave
 ```
+
+Then initialize the plugin.
 
 ```javascript
 // main.js
@@ -22,16 +26,18 @@ import VueShave from 'vue-shave';
 Vue.use( VueShave );
 ```
 
-**Note: We install `shave` from the github master branch as a temporary measure until support for attaching `shave` directly to DOM nodes is released.**
-
 ### CDN
 
-```html
-<script src="https://cdn.rawgit.com/dollarshaveclub/shave/f9715ab6/dist/shave.min.js"></script>
-<script src="https://unpkg.com/vue-shave@1.0.1"></script>
-```
+Include shave and vue-shave. 
 
 **Note: Remember to include the shave library before `vue-shave`**
+
+```html
+<script src="https://unpkg.com/shave@2.0.2"></script>
+<script src="https://unpkg.com/vue-shave@1.0.2"></script>
+```
+
+Then initialize the plugin.
 
 ```javascript
 // main.js
