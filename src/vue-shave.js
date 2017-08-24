@@ -35,7 +35,6 @@ function install( Vue, options ) {
 			// Create the function to run on window resize
 			// Bound to the given shaver settings
 			const shaveFn = (( height, character, spaces ) => {
-				console.log( 'shaving' );
 				shave( el, height, { character, spaces });
 			}).bind( null, settings.height, settings.character, settings.spaces );
 
