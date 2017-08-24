@@ -1,5 +1,5 @@
 /*!
- * vue-shave v1.0.2
+ * vue-shave v1.0.3
  * https://github.com/quantity-digital/vue-shave.git
  * Released under the MIT License.
  */

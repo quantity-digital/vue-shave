@@ -10017,7 +10017,7 @@ module.exports = g;
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_0_shave_dist_shave__ = __webpack_require__(5);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_0_shave_dist_shave___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_0_shave_dist_shave__);
 /*!
- * vue-shave v1.0.1
+ * vue-shave v1.0.3
  * https://github.com/quantity-digital/vue-shave.git
  * Released under the MIT License.
  */
@@ -10095,7 +10095,6 @@ function install(Vue, options) {
 			// Create the function to run on window resize
 			// Bound to the given shaver settings
 			var shaveFn = function (height, character, spaces) {
-				console.log('shaving');
 				__WEBPACK_IMPORTED_MODULE_0_shave_dist_shave___default.a(el, height, { character: character, spaces: spaces });
 			}.bind(null, settings.height, settings.character, settings.spaces);
 

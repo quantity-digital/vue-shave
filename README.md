@@ -34,7 +34,7 @@ Include shave and vue-shave.
 
 ```html
 <script src="https://unpkg.com/shave@2.0.2"></script>
-<script src="https://unpkg.com/vue-shave@1.0.2"></script>
+<script src="https://unpkg.com/vue-shave@1.0.3"></script>
 ```
 
 Then initialize the plugin.
